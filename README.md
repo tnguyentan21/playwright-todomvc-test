@@ -1,5 +1,7 @@
 # 🎯 Playwright TodoMVC Tests ![CI](https://github.com/tnguyentan21/playwright-todomvc-test/actions/workflows/playwright.yml/badge.svg)
 
+🔗 [Latest Allure Report](https://tnguyentan21.github.io/playwright-todomvc-test/)
+
 This repository contains Playwright tests for the [TodoMVC React app](https://todomvc.com/examples/react/dist/), using the **Page Object Model (POM)** pattern.
 
 > ✅ Built for practicing and showcasing modern E2E automation with Playwright, Allure, GitHub Actions, and CI reporting.
