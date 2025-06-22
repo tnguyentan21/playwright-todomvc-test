@@ -1,97 +1,66 @@
-# 🎯 Playwright TodoMVC Tests ![CI](https://github.com/tnguyentan21/playwright-todomvc-test/actions/workflows/playwright.yml/badge.svg)
+# 🎯 Playwright TodoMVC Tests
 
-This repository contains Playwright tests for the [TodoMVC React app](https://todomvc.com/examples/react/dist/), using the **Page Object Model (POM)** pattern.
+[![CI](https://github.com/tnguyentan21/playwright-todomvc-test/actions/workflows/playwright.yml/badge.svg)](https://github.com/tnguyentan21/playwright-todomvc-test/actions)
+[![Allure Report](https://img.shields.io/badge/Allure-Report-blue)](https://tnguyentan21.github.io/playwright-todomvc-test/)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> ✅ Built for practicing and showcasing modern E2E automation with Playwright, Allure, GitHub Actions, and CI reporting.
+Automated E2E tests for the [TodoMVC React app](https://todomvc.com/examples/react/dist/) using Playwright and the Page Object Model (POM).  
+This project demonstrates a clean automation framework for CI, reporting, and modern testing practices.
 
 ---
 
-## 📁 Project Structure
+## 🧰 Tech Stack
+
+| Tool / Tech        | Description                                |
+|--------------------|--------------------------------------------|
+| [Playwright](https://playwright.dev/)         | Headless browser automation framework |
+| [Allure](https://docs.qameta.io/allure/)      | Test report and history with trends    |
+| GitHub Actions     | Continuous Integration with test artifacts |
+| Node.js 20.x       | Runtime for Playwright tests               |
+| JavaScript (ESM)   | Language and modern module syntax          |
+
+---
+
+## 🖼️ Test Run Preview
+
+> Sample test run (recorded locally)
+
+![Test Run Preview](docs/test-run.gif)
+
+> _Optional:_ Use a screenshot instead:
+> `<img src="docs/screenshot.png" width="600"/>`
+
+---
+
+## 📂 Project Structure
 
 ```
 playwright-todomvc-test/
-├── tests/               # Test specs
-├── pages/               # Page Object classes
-├── playwright.config.js # Playwright config
-├── allure-report/       # Generated HTML report (local only)
-├── .github/workflows/   # GitHub Actions CI
+├── pages/                  # Page Object Models
+│   └── TodoPage.js
+├── tests/                  # All test specs
+│   └── add-todo.spec.js
+├── playwright.config.js    # Playwright config
+├── .github/workflows/      # GitHub Actions workflow
+│   └── playwright.yml
+├── allure-report/          # HTML test report (CI generated)
+├── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Live Report
 
-### 1. Install dependencies
-
-```bash
-npm install
-```
-
-### 2. Run tests
-
-```bash
-# Run tests headlessly
-npm test
-
-# Run with browser UI
-npm run test:headed
-
-# View last HTML report
-npm run test:report
-```
+View the latest Allure report from CI on GitHub Pages:  
+👉 **[Click here to open report](https://tnguyentan21.github.io/playwright-todomvc-test/)**
 
 ---
 
-## 🧪 Allure Reporting (Local)
+## 🔗 Author
 
-### To view locally:
-
-```bash
-npx allure-commandline generate allure-results --clean -o allure-report
-http-server allure-report -p 9999 -o
-```
-
-> or just run the `view-report.bat` script included in the repo (see below)
+Created by **Tan Nguyen**  
+GitHub: [@tnguyentan21](https://github.com/tnguyentan21)  
+Portfolio: _Add your portfolio or LinkedIn link here_
 
 ---
-
-## 📊 GitHub CI Reports
-
-This project automatically runs Playwright tests and publishes reports on every push or pull request to `main`.
-
-### 🔗 Live Report:
-
-- 📊 [Allure GitHub Pages Report](https://tnguyentan21.github.io/playwright-todomvc-test/)
-
-### 🧾 Downloadable Reports:
-
-1. Go to the [Actions tab](https://github.com/tnguyentan21/playwright-todomvc-test/actions)
-2. Click on any run
-3. Scroll to **Artifacts** section:
-   - `allure-report.zip` — HTML report
-   - `playwright-report.zip` — Built-in Playwright HTML report
-
-### 📈 Trending Support
-
-The workflow stores Allure history so your report includes:
-
-- Pass/fail trend
-- Test duration history
-- Flaky test detection
-
----
-
-## 💻 One-click Local Report Viewer
-
-You can use the `view-report.bat` script:
-
-```bat
-:: Double-click or run in terminal
-view-report.bat
-```
-
----
-
-## 📄 License
-
-[MIT License](LICENSE)
