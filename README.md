@@ -1,7 +1,5 @@
 # 🎯 Playwright TodoMVC Tests ![CI](https://github.com/tnguyentan21/playwright-todomvc-test/actions/workflows/playwright.yml/badge.svg)
 
-🔗 [Latest Allure Report](https://tnguyentan21.github.io/playwright-todomvc-test/)
-
 This repository contains Playwright tests for the [TodoMVC React app](https://todomvc.com/examples/react/dist/), using the **Page Object Model (POM)** pattern.
 
 > ✅ Built for practicing and showcasing modern E2E automation with Playwright, Allure, GitHub Actions, and CI reporting.
@@ -15,7 +13,8 @@ playwright-todomvc-test/
 ├── tests/               # Test specs
 ├── pages/               # Page Object classes
 ├── playwright.config.js # Playwright config
-├── .github/workflows/   # CI setup (GitHub Actions)
+├── allure-report/       # Generated HTML report (local only)
+├── .github/workflows/   # GitHub Actions CI
 ```
 
 ---
@@ -45,30 +44,51 @@ npm run test:report
 
 ## 🧪 Allure Reporting (Local)
 
-After test run:
+### To view locally:
 
 ```bash
-# Generate and open Allure HTML report (if using Allure)
-npx allure generate allure-results --clean -o allure-report && npx allure open allure-report
+npx allure-commandline generate allure-results --clean -o allure-report
+http-server allure-report -p 9999 -o
 ```
 
-> You need to install Allure CLI for this:  
-> https://docs.qameta.io/allure/#_installing_a_commandline
+> or just run the `view-report.bat` script included in the repo (see below)
 
 ---
 
-## 🛰 CI / GitHub Actions
+## 📊 GitHub CI Reports
 
-This project runs all tests automatically on every push to `main`.
+This project automatically runs Playwright tests and publishes reports on every push or pull request to `main`.
 
-### 🔍 See reports:
+### 🔗 Live Report:
 
-1. Go to the **[Actions tab](https://github.com/tnguyentan21/playwright-todomvc-test/actions)** of this repo
-2. Click on the latest workflow run
-3. Scroll to the bottom to see:
+- 📊 [Allure GitHub Pages Report](https://tnguyentan21.github.io/playwright-todomvc-test/)
 
-- ✅ **HTML Report** (under `playwright-report` artifact)
-- ✅ **Allure Results** (under `allure-results` artifact)
+### 🧾 Downloadable Reports:
+
+1. Go to the [Actions tab](https://github.com/tnguyentan21/playwright-todomvc-test/actions)
+2. Click on any run
+3. Scroll to **Artifacts** section:
+   - `allure-report.zip` — HTML report
+   - `playwright-report.zip` — Built-in Playwright HTML report
+
+### 📈 Trending Support
+
+The workflow stores Allure history so your report includes:
+
+- Pass/fail trend
+- Test duration history
+- Flaky test detection
+
+---
+
+## 💻 One-click Local Report Viewer
+
+You can use the `view-report.bat` script:
+
+```bat
+:: Double-click or run in terminal
+view-report.bat
+```
 
 ---
 

@@ -7,6 +7,8 @@ node_modules/
 /playwright/.cache/
 /allure-report/
 /allure-results/
+view-report.bat
+
 # Logs
 logs
 *.log
