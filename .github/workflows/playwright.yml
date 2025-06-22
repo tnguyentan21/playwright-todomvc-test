@@ -4,18 +4,15 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
-
-permissions:
-  contents: write # Required to push to gh-pages
+  workflow_dispatch:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -26,63 +23,69 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      # Install Allure CLI
+      - name: Install Allure commandline
+        run: npm install -D allure-commandline
 
+      # Restore Allure history from GitHub Actions cache
+      - name: Restore Allure history cache
+        uses: actions/cache@v4
+        with:
+          path: allure-history-cache
+          key: allure-history-${{ github.ref }}
+
+      # Copy restored history if available
+      - name: Copy history from cache (if exists)
+        run: |
+          mkdir -p allure-results/history
+          cp -r allure-history-cache/* allure-results/history/ || echo "No cached history to copy"
+
+      # Run Playwright tests and generate allure results
       - name: Run Playwright tests
         run: npx playwright test
 
-      # Download history from previous run (optional, won't fail build)
-      - name: Download previous Allure history (if any)
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-history
-          path: allure-results/history
+      # Prepare output folder for report
+      - name: Prepare Allure report folder
+        run: mkdir -p allure-report/history
 
-      # Prepare history for new report
-      - name: Prepare Allure history
-        run: |
-          mkdir -p allure-report/history
-          cp -r allure-results/history/* allure-report/history/ || echo "No previous history to copy"
-
-      # Generate the Allure HTML report
+      # Generate Allure HTML report
       - name: Generate Allure Report
         run: npx allure-commandline generate allure-results --clean -o allure-report
 
-      # Debug: verify history was generated
-      - name: List Allure history contents
-        run: ls -lR allure-report/history || echo "No history folder found"
+      # Save history to cache folder for next run
+      - name: Save updated Allure history to cache folder
+        run: |
+          mkdir -p allure-history-cache
+          cp -r allure-report/history/* allure-history-cache/ || echo "No history to save"
 
-      # Upload Allure HTML report as downloadable artifact
-      - name: Upload Allure HTML Report
+      # Upload Allure history artifact
+      - name: Upload Allure history artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-history
+          path: allure-report/history
+
+      # Upload Allure HTML report
+      - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
 
-      # Upload Playwright built-in HTML report as artifact
-      - name: Upload Playwright HTML Report
+      # Upload Playwright HTML report
+      - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report
 
-      # Deploy to GitHub Pages (live Allure report)
-      - name: Deploy Allure Report to GitHub Pages
+      # Deploy Allure report to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
-          publish_branch: gh-pages
-          keep_files: true
-
-      # Upload history for future trending
-      - name: Upload Allure history
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-history
-          path: allure-report/history
+          publish_dir: allure-report
