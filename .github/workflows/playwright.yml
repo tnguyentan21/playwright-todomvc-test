@@ -2,9 +2,9 @@ name: Playwright Tests
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -15,8 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -29,24 +32,37 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-      - name: List allure-results contents
-        run: ls -R allure-results
-
-      - name: Download previous report (if any)
+      - name: Download previous report history (if any)
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-history
-          path: allure-report/history
+          path: allure-results/history
 
       - name: Generate Allure Report
-        run: npx allure-commandline generate allure-results --clean -o allure-report
-
-      - name: Copy history back
         run: |
           mkdir -p allure-report/history
-          cp -R allure-report/history/* allure-report/history/ || true
+          cp -r allure-results/history/* allure-report/history/ || true
+          npx allure-commandline generate allure-results --clean -o allure-report
 
-      - name: Deploy to GitHub Pages
+      # ✅ Upload Allure HTML Report as Artifact
+      - name: Upload Allure HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+
+      # ✅ Upload Playwright HTML Report as Artifact
+      - name: Upload Playwright HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+
+      # 🌐 Deploy Allure Report to GitHub Pages
+      - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -54,22 +70,9 @@ jobs:
           publish_branch: gh-pages
           keep_files: true
 
-      - name: Save history for next run
+      # ♻️ Save history for trending in future runs
+      - name: Upload Allure history
         uses: actions/upload-artifact@v4
         with:
           name: allure-history
           path: allure-report/history
-
-      - name: Upload Allure HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: allure-report
-
-      - name: Upload HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report
