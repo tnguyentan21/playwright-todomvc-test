@@ -24,12 +24,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # 👇 Essential step to fix your issue
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Install Allure CLI
         run: npm install -D allure-commandline
 
       - name: Run Playwright tests
         run: npx playwright test
-        continue-on-error: true # Let it continue to generate report even if tests fail
+        continue-on-error: true
 
       # Generate Allure HTML report
       - name: Generate Allure Report
