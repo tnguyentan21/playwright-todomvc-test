@@ -50,17 +50,11 @@ jobs:
             exit 1
           fi
 
-      # Save updated Allure history to cache
+      # Save updated Allure history
       - name: Save updated Allure history
         run: |
-          mkdir -p allure-history-cache
-          cp -r allure-report/history/* allure-history-cache/
-
-      - name: Cache updated Allure history
-        uses: actions/cache/save@v4
-        with:
-          path: allure-history-cache
-          key: allure-history-${{ github.ref }}
+          mkdir -p allure-results/history
+          cp -r allure-report/history/* allure-results/history/
 
       # Upload Allure report artifact
       - name: Upload Allure report
